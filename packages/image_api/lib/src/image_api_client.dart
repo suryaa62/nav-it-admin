@@ -13,6 +13,7 @@ class ImageApiClient {
   }
 
   Future<ImageModel> getWithId({required String id}) async {
+    print("ooooooooooo>>>>$id");
     try {
       Response response = await _dio.get("/id", data: {"id": id});
 

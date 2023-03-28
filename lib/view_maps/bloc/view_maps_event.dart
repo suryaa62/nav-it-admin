@@ -15,7 +15,7 @@ class GetBuildingList extends ViewMapsEvent {
 class BuildingIndexChanged extends ViewMapsEvent {
   const BuildingIndexChanged(this.index);
 
-  final String? index;
+  final int? index;
 
   @override
   List<Object?> get props => [index];
@@ -29,7 +29,7 @@ class GetFloorList extends ViewMapsEvent {
 class FloorIndexChanged extends ViewMapsEvent {
   const FloorIndexChanged(this.index);
 
-  final String? index;
+  final int? index;
 
   @override
   List<Object?> get props => [index];

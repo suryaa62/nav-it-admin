@@ -46,7 +46,7 @@ class ViewMapsBloc extends Bloc<ViewMapsEvent, ViewMapsState> {
     try {
       emit(state.copyWith(status: ViewMapsStatus.busy));
       floors =
-          await naviRepository.getAllFloorsOfBuildingId(state.currBuilding!);
+          await naviRepository.getAllFloorsOfBuildingId(state.buildings[state.currBuilding!]["id"]!);
       emit(state.copyWith(floors: floors, status: ViewMapsStatus.notBusy));
     } catch (e) {
       print(e);

@@ -29,28 +29,30 @@ class AddFloorView extends StatelessWidget {
     return BlocBuilder<ViewMapsBloc, ViewMapsState>(builder: (context, state) {
       return Column(
         children: [
-          DropdownButton(
-              value: state.currBuilding,
-              onChanged: (value) {
-                context.read<ViewMapsBloc>().add(BuildingIndexChanged(value));
-              },
-              items: state.buildings
-                  .map((e) => DropdownMenuItem(
-                        child: Text(e["name"]!),
-                        value: e["id"]!,
-                      ))
-                  .toList()),
-          DropdownButton(
-              value: state.currFloor,
-              onChanged: (value) {
-                context.read<ViewMapsBloc>().add(FloorIndexChanged(value));
-              },
-              items: state.floors
-                  .map((e) => DropdownMenuItem(
-                        child: Text(e.level.toString()),
-                        value: e.id,
-                      ))
-                  .toList()),
+          DropdownButton<int>(
+            value: state.currBuilding,
+            onChanged: (value) {
+              context.read<ViewMapsBloc>().add(BuildingIndexChanged(value));
+            },
+            items: List.generate(
+                state.buildings.length,
+                (index) => DropdownMenuItem(
+                      child: Text(state.buildings[index]["name"]!),
+                      value: index,
+                    )),
+          ),
+          DropdownButton<int>(
+            value: state.currFloor,
+            onChanged: (value) {
+              context.read<ViewMapsBloc>().add(FloorIndexChanged(value));
+            },
+            items: List.generate(
+                state.floors.length,
+                (index) => DropdownMenuItem(
+                      child: Text(state.floors[index].level.toString()),
+                      value: index,
+                    )),
+          ),
           Expanded(
             child: BlocProvider(
               create: (context) => MapBloc(
@@ -61,9 +63,9 @@ class AddFloorView extends StatelessWidget {
                   return BlocListener<ViewMapsBloc, ViewMapsState>(
                     listener: (context, state) {
                       if (state.currFloor != null) {
-                        context
-                            .read<MapBloc>()
-                            .add(getNewMap(state.currFloor! , state.currFloor! ));
+                        context.read<MapBloc>().add(getNewMap(
+                            floorId: state.floors[state.currFloor!].id!,
+                            imageId: state.floors[state.currFloor!].imageId!));
                       }
                     },
                     child: MapViewer(),

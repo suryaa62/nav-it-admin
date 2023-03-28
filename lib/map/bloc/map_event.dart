@@ -8,7 +8,7 @@ abstract class MapEvent extends Equatable {
 }
 
 class getNewMap extends MapEvent {
-  getNewMap(this.imageId , this.floorId) {
+  getNewMap({required this.imageId , required this.floorId}) {
   }
 
   final String imageId;

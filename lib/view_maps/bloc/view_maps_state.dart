@@ -18,16 +18,16 @@ class ViewMapsState extends Equatable {
 
   final List<Map<String, String>> buildings;
   final List<Floor> floors;
-  final String? currBuilding;
-  final String? currFloor;
+  final int? currBuilding;
+  final int? currFloor;
   final String? imageId;
   final ViewMapsStatus status;
 
   ViewMapsState copyWith(
       {List<Map<String, String>>? buildings,
       List<Floor>? floors,
-      String? currBuilding,
-      String? currFloor,
+      int? currBuilding,
+      int? currFloor,
       String? imageId,
       ViewMapsStatus? status}) {
     return ViewMapsState(
