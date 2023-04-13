@@ -9,12 +9,10 @@ part of 'node.dart';
 Node _$NodeFromJson(Map<String, dynamic> json) => Node(
       x: (json['x'] as num).toDouble(),
       y: (json['y'] as num).toDouble(),
-      id: json['id'] as String,
-      description: json['description'] as String,
+      id: json['_id'] as String,
+      desc: json['desc'] as String,
       floorId: json['floorId'] as String,
-      iconId: json['iconId'] as String,
-      searchTags: json['searchTags'] as String,
-      showText: json['showText'] as String,
+      label: json['label'] as String,
       type: json['type'] as String,
       ssid: json['ssid'] as String?,
     );
@@ -22,12 +20,10 @@ Node _$NodeFromJson(Map<String, dynamic> json) => Node(
 Map<String, dynamic> _$NodeToJson(Node instance) => <String, dynamic>{
       'x': instance.x,
       'y': instance.y,
-      'id': instance.id,
+      '_id': instance.id,
       'type': instance.type,
       'floorId': instance.floorId,
-      'showText': instance.showText,
-      'description': instance.description,
-      'searchTags': instance.searchTags,
-      'iconId': instance.iconId,
+      'label': instance.label,
+      'desc': instance.desc,
       'ssid': instance.ssid,
     };

@@ -8,11 +8,9 @@ class Node {
       {required this.x,
       required this.y,
       required this.id,
-      required this.description,
+      required this.desc,
       required this.floorId,
-      required this.iconId,
-      required this.searchTags,
-      required this.showText,
+      required this.label,
       required this.type,
       this.ssid});
 
@@ -22,12 +20,11 @@ class Node {
 
   final double x;
   final double y;
+  @JsonKey(name: "_id")
   final String id;
   final String type;
   final String floorId;
-  final String showText;
-  final String description;
-  final String searchTags;
-  final String iconId;
+  final String label;
+  final String desc;
   String? ssid;
 }

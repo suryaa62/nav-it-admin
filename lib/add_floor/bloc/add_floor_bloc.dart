@@ -65,6 +65,7 @@ class AddFloorBloc extends Bloc<AddFloorEvent, AddFloorState> {
               imageFile: state.image));
       emit(state.copyWith(status: AddFloorStatus.success));
     } catch (e) {
+      emit(state.copyWith(status: AddFloorStatus.error));
       print(e);
     }
   }

@@ -6,6 +6,7 @@ import 'package:navi_api/navi_api.dart';
 import 'package:image_api/image_api.dart';
 import 'package:navi_repository/navi_repository.dart';
 import 'package:navi_repository/src/models/building.dart';
+import 'package:navi_repository/src/models/link.dart';
 
 class NaviRepository {
   late NaviAPIClient naviAPIClient;
@@ -13,6 +14,8 @@ class NaviRepository {
 
   NaviRepository() {
     String baseUrl = "http://10.0.2.2:5050";
+    // String baseUrl = "https://cd08-136-233-9-98.ngrok-free.app";
+
     naviAPIClient = NaviAPIClient(baseUrl: baseUrl);
     imageApiClient = ImageApiClient(baseUrl: "$baseUrl/images");
   }
@@ -78,7 +81,7 @@ class NaviRepository {
   Future<Uint8List> getImageAsBuffer(String id) async {
     try {
       ImageModel image = await imageApiClient.getWithId(id: id);
-      Uint8List imageFile = base64.decode(image.image);  
+      Uint8List imageFile = base64.decode(image.image);
       return imageFile;
     } catch (e) {
       rethrow;
@@ -87,6 +90,7 @@ class NaviRepository {
 
   Future<void> addBuilding({required Building building}) async {
     try {
+      print(building.imageFile.name);
       String imageAsString =
           base64.encode(await building.imageFile.readAsBytes());
       String imageId = await imageApiClient.upload(
@@ -95,6 +99,41 @@ class NaviRepository {
               mime_type: building.imageFile.mimeType ?? "",
               name: building.imageFile.name));
       await naviAPIClient.createBuilding(name: building.name, imageId: imageId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addNode({required Node node}) async {
+    try {
+      await naviAPIClient.createNode(
+          label: node.label,
+          desc: node.desc,
+          floorId: node.floorId,
+          ssid: node.ssid,
+          type: node.type,
+          x: node.x,
+          y: node.y);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Node>> getAllNodes({required String floorId}) async {
+    try {
+      final nodes = await naviAPIClient.getAllNodes(floorId: floorId);
+
+      return nodes
+          .map((e) => Node(
+              ssid: e.ssid,
+              id: e.id,
+              x: e.x,
+              desc: e.desc,
+              floorId: e.floorId,
+              label: e.label,
+              type: e.type,
+              y: e.y))
+          .toList();
     } catch (e) {
       rethrow;
     }
@@ -111,6 +150,32 @@ class NaviRepository {
               name: floor.imageFile!.name));
       await naviAPIClient.createFloor(
           buildingId: floor.buildingId, level: floor.level, imageId: imageId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addLink({required Link link}) async {
+    try {
+      await naviAPIClient.createLink(
+          floorId: link.floorId, linkId1: link.link1Id, linkId2: link.link2Id);
+      print("S1");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Link>> getAllLinks({required String floorId}) async {
+    try {
+      final nodes = await naviAPIClient.getAllLinks(floorId: floorId);
+
+      return nodes
+          .map((e) => Link(
+              id: e.id,
+              floorId: e.floorId,
+              link1Id: e.linkId1,
+              link2Id: e.linkId2))
+          .toList();
     } catch (e) {
       rethrow;
     }

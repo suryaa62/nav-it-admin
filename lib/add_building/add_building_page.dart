@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:navi/add_building/bloc/add_building_bloc.dart';
+import 'package:navi/widgets/myAlertDialog.dart';
 import 'package:navi_repository/navi_repository.dart';
 
 class AddBuildingPage extends StatelessWidget {
@@ -33,29 +34,18 @@ class AddBuildingView extends StatelessWidget {
     }
   }
 
-  Future<void> _showMyDialog(BuildContext context, final String message) async {
+  Future<void> _showMyDialog(
+      BuildContext context, final String message, final String content) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(message),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        return MyAlertDialog(
+          content: content,
+          message: message,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         );
       },
     );
@@ -68,47 +58,87 @@ class AddBuildingView extends StatelessWidget {
       body: BlocConsumer<AddBuildingBloc, AddBuildingState>(
         listener: (context, state) {
           if (state.status == AddBuildingStatus.error) {
-            _showMyDialog(context, "Error Occured");
+            _showMyDialog(context, "Error", "Oops! There was an error.");
           }
 
           if (state.status == AddBuildingStatus.success) {
-            _showMyDialog(context, "Added Succesfully")
+            _showMyDialog(context, "Success", "New building has been added")
                 .then((value) => Navigator.of(context).pop());
           }
+          
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              TextField(
-                onChanged: (value) {
-                  context
-                      .read<AddBuildingBloc>()
-                      .add(BuildingNameChanged(value));
-                },
-              ),
-              if (state.image == null)
-                const Text("Please Select Image")
-              else
-                Image.file(File(state.image!.path), height: 300),
-              ElevatedButton(
-                child: const Text("Choose Image"),
-                onPressed: () {
-                  _pickImage(context);
-                },
-              ),
-              ElevatedButton(
-                onPressed: (state.name == null || state.image == null)
-                    ? null
-                    : () {
-                        context
-                            .read<AddBuildingBloc>()
-                            .add(const BuildingSubmitted());
-                      },
-                child: (state.status == AddBuildingStatus.loading)
-                    ? const CircularProgressIndicator()
-                    : const Text("Add Building"),
-              ),
-            ],
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 16),
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(label: Text("Building Name")),
+                  onChanged: (value) {
+                    context
+                        .read<AddBuildingBloc>()
+                        .add(BuildingNameChanged(value));
+                  },
+                ),
+                if (state.image != null)
+                  Expanded(
+                      child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+                    child: Image.file(
+                      File(state.image!.path),
+                      fit: BoxFit.cover,
+                    ),
+                  ))
+                else
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          _pickImage(context);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(7)),
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 1,
+                              )),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Click here to choose image",
+                                style: TextStyle(fontSize: 23),
+                              ),
+                              Image.asset("assets/imagechoose.png"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: (state.name == null || state.image == null)
+                        ? null
+                        : () {
+                            context
+                                .read<AddBuildingBloc>()
+                                .add(const BuildingSubmitted());
+                          },
+                    child: (state.status == AddBuildingStatus.loading)
+                        ? const CircularProgressIndicator()
+                        : const Text("Add Building"),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),

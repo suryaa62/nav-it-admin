@@ -26,8 +26,10 @@ class ViewMapsBloc extends Bloc<ViewMapsEvent, ViewMapsState> {
     try {
       emit(state.copyWith(status: ViewMapsStatus.busy));
       buildings = await naviRepository.getAllBuildingsName();
-      emit(
-          state.copyWith(buildings: buildings, status: ViewMapsStatus.notBusy ,));
+      emit(state.copyWith(
+        buildings: buildings,
+        status: ViewMapsStatus.notBusy,
+      ));
     } catch (e) {
       print(e);
     }
@@ -45,8 +47,8 @@ class ViewMapsBloc extends Bloc<ViewMapsEvent, ViewMapsState> {
 
     try {
       emit(state.copyWith(status: ViewMapsStatus.busy));
-      floors =
-          await naviRepository.getAllFloorsOfBuildingId(state.buildings[state.currBuilding!]["id"]!);
+      floors = await naviRepository.getAllFloorsOfBuildingId(
+          state.buildings[state.currBuilding!]["id"]!);
       emit(state.copyWith(floors: floors, status: ViewMapsStatus.notBusy));
     } catch (e) {
       print(e);
