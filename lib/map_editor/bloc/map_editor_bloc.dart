@@ -29,7 +29,7 @@ class MapEditorBloc extends Bloc<MapEditorEvent, MapEditorState> {
 
   void _onToggleCanAddLinkTo(
       ToggleCanAddLinkTo event, Emitter<MapEditorState> emit) {
-    emit(state.copyWith(canAddLink: event.to));
+    emit(state.copyWith(canAddLink: event.to, node1Id: ""));
   }
 
   void _onShowBottomSheet(ShowBottamSheet event, Emitter<MapEditorState> emit) {
@@ -47,12 +47,11 @@ class MapEditorBloc extends Bloc<MapEditorEvent, MapEditorState> {
     emit(state.copyWith(status: MapEditorStatus.map));
   }
 
-  void _onRefresh(
-      Refresh event, Emitter<MapEditorState> emit) {
-    emit(state.copyWith(refresh: state.refresh + 1));
+  void _onRefresh(Refresh event, Emitter<MapEditorState> emit) async {
+    emit(state.copyWith(status: MapEditorStatus.refresh));
+    await Future.delayed(Duration(seconds: 2),
+        () => emit(state.copyWith(status: MapEditorStatus.map)));
   }
-
-
 
   void _onClickedOnANode(
       ClickedOnANode event, Emitter<MapEditorState> emit) async {
@@ -72,6 +71,7 @@ class MapEditorBloc extends Bloc<MapEditorEvent, MapEditorState> {
 
           print("success");
           emit(state.copyWith(status: MapEditorStatus.notBusy, node1Id: ""));
+          add(Refresh());
         } catch (e) {
           //Error
           print(e);

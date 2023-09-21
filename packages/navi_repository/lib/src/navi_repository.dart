@@ -13,8 +13,8 @@ class NaviRepository {
   late ImageApiClient imageApiClient;
 
   NaviRepository() {
-    String baseUrl = "http://10.0.2.2:5050";
-    // String baseUrl = "https://cd08-136-233-9-98.ngrok-free.app";
+    // String baseUrl = "http://10.0.2.2:5050";
+    String baseUrl = "https://navit-backend.vercel.app";
 
     naviAPIClient = NaviAPIClient(baseUrl: baseUrl);
     imageApiClient = ImageApiClient(baseUrl: "$baseUrl/images");

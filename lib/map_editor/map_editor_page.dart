@@ -110,10 +110,10 @@ class _MapEditorViewState extends State<MapEditorView> {
                                               ),
                                             )
                                                 .then((value) {
+                                              Navigator.pop(context);
                                               blocContext
                                                   .read<MapEditorBloc>()
                                                   .add(Refresh());
-                                              Navigator.pop(context);
                                             });
                                           },
                                         ),
@@ -128,17 +128,21 @@ class _MapEditorViewState extends State<MapEditorView> {
                                           onPressed: () {
                                             Navigator.of(context)
                                                 .push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddWifiNodePage(
-                                                      x: state.x!,
-                                                      y: state.y!,
-                                                      floorId: (state.floorId),
-                                                    ),
-                                                  ),
-                                                )
-                                                .then((value) =>
-                                                    Navigator.pop(context));
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddWifiNodePage(
+                                                  x: state.x!,
+                                                  y: state.y!,
+                                                  floorId: (state.floorId),
+                                                ),
+                                              ),
+                                            )
+                                                .then((value) {
+                                              Navigator.pop(context);
+                                              blocContext
+                                                  .read<MapEditorBloc>()
+                                                  .add(Refresh());
+                                            });
                                           },
                                         ),
                                       ),
@@ -224,7 +228,10 @@ class AddLinkButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MapEditorBloc, MapEditorState>(
       builder: (context, state) => IconButton(
-        icon: Icon((state.canAddLink) ? Icons.mode_standby : Icons.link),
+        icon: Icon(
+          (state.canAddLink) ? Icons.mode_standby : Icons.link,
+          color: (state.node1Id != "") ? Colors.green : Colors.white,
+        ),
         onPressed: () {
           context
               .read<MapEditorBloc>()

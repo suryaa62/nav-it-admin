@@ -35,7 +35,7 @@ class AddFloorView extends StatelessWidget {
     }
   }
 
-   Future<void> _showMyDialog(
+  Future<void> _showMyDialog(
       BuildContext context, final String message, final String content) async {
     return showDialog<void>(
       context: context,
@@ -55,11 +55,12 @@ class AddFloorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text("Add Floor")),
       body: BlocConsumer<AddFloorBloc, AddFloorState>(
         listener: (context, state) {
           if (state.status == AddFloorStatus.error) {
-              _showMyDialog(context, "Error", "Oops! There was an error.");
+            _showMyDialog(context, "Error", "Oops! There was an error.");
           }
 
           if (state.status == AddFloorStatus.success) {

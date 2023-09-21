@@ -7,6 +7,7 @@ enum MapEditorStatus {
   notBusy,
   success,
   error,
+  refresh,
 }
 
 class MapEditorState extends Equatable {

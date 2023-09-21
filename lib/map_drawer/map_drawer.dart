@@ -25,25 +25,50 @@ class MapDrawer extends StatelessWidget {
         create: (context) => MapDrawerBloc(
             floorId: floorId, naviRepository: context.read<NaviRepository>())
           ..add(GetNodes(canEdit: canEdit)),
-        child: BlocBuilder<MapDrawerBloc, MapDrawerState>(
-          builder: (context, state) {
-            return Stack(
-              children: [
-                LinkDrawer(
-                  links: state.links,
-                  nodes: state.nodes,
+        child: (canEdit)
+            ? BlocListener<MapEditorBloc, MapEditorState>(
+                listener: (context, state) {
+                  if (state.status == MapEditorStatus.refresh) {
+                    context
+                        .read<MapDrawerBloc>()
+                        .add(GetNodes(canEdit: canEdit));
+                  }
+                },
+                child: MapDrawerChild(
                   child: child,
-                ),
-                ...state.nodes.map((e) {
-                  return NodeWidget(
-                    node: e,
-                    canEdit: canEdit,
-                  );
-                }).toList(),
-              ],
-            );
-          },
-        ));
+                  canEdit: canEdit,
+                ))
+            : MapDrawerChild(child: child, canEdit: canEdit));
+  }
+}
+
+class MapDrawerChild extends StatelessWidget {
+  const MapDrawerChild({super.key, required this.child, required this.canEdit});
+
+  final Widget child;
+  final bool canEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MapDrawerBloc, MapDrawerState>(
+      builder: (context, state) {
+        return Stack(
+          children: [
+            LinkDrawer(
+              links: state.links,
+              nodes: state.nodes,
+              child: child,
+            ),
+            ...state.nodes.map((e) {
+              return NodeWidget(
+                node: e,
+                canEdit: canEdit,
+              );
+            }).toList(),
+          ],
+        );
+      },
+    );
   }
 }
 
